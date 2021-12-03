@@ -47,6 +47,7 @@ public class CallsFragment extends Fragment {
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     LinearLayoutManager linearlayout;
+    boolean isLoading = false;
 
     public CallsFragment() {
     }
@@ -59,69 +60,110 @@ public class CallsFragment extends Fragment {
         callsrecycler = view.findViewById(R.id.callsrecycler);
         progressrel = view.findViewById(R.id.progressrel);
         progressBar = view.findViewById(R.id.progressbar);
-//        adapter = new CallReyclerAdapter(getContext(), callarray);
-//        callsrecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-//        callsrecycler.setAdapter(adapter);
-//        adapter = new CallReyclerAdapter();
-//        adapter.submitList(getContext(), callarray);
-//        callsrecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                if (dy > 0) { //check for scroll down
-//                    visibleItemCount = linearlayout.getChildCount();
-//                    totalItemCount = linearlayout.getItemCount();
-//                    pastVisiblesItems = linearlayout.findFirstVisibleItemPosition();
-//                    if (loading) {
-//                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-//                            loading = false;
-//                            Log.e("recyclerviewend", "Last Item Wow !");
-//                            // Do pagination.. i.e. fetch new data
-//
-//                            loading = true;
-//                        }
-//                    }
-//                }
-//            }
-//        });
-        GetCallHistory();
-//        GetCalls();
+        adapter = new CallReyclerAdapter(getContext(), callarray);
+        linearlayout = new LinearLayoutManager(getContext());
+        callsrecycler.setLayoutManager(linearlayout);
+        callsrecycler.setAdapter(adapter);
+        callsrecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (!isLoading) {
+                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == callarray.size() - 1) {
+                        Log.e("loadingindexcheck", "" + (callarray.size() - 1));
+                        callarray.add(null);
+                        adapter.notifyItemInserted(callarray.size() - 1);
+                        isLoading = true;
+                        int loadingindex = callarray.size() - 1;
+                        getMoreDataInBackground(loadingindex, isLoading);
+                        isLoading = false;
+                    }
+                }
+            }
+        });
+
+        GetCallHistoryInBackground();
         return view;
     }
 
-    @SuppressLint("Range")
-    private void GetCallHistory() {
-        nocallrel.setVisibility(GONE);
+    private void getMoreDataInBackground(int loadingindex, boolean isLoading) {
+        boolean[] loading = {isLoading};
         new TaskRunner().executeAsync(new Callable<String>() {
-            String result = null;
-
             @Override
-            public String call()  {
-                callarray.clear();
+            public String call() throws Exception {
+//                callarray.clear();
                 progressBar.setVisibility(View.VISIBLE);
                 progressrel.setVisibility(View.VISIBLE);
-                StringBuffer sb = new StringBuffer();
-                ContentResolver cr = getContext().getContentResolver();
-                Cursor managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, null);
-                int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
-                int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
-                int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
-                int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
-                sb.append("Call Details :");
-                Log.e("calldetailscheck", "" + managedCursor.getCount());
-                if (managedCursor.getCount() > 0) {
-//                    progressBar.progressiveStart();
-                    for (int i = 0; i < managedCursor.getCount(); i++) {
-                        managedCursor.moveToNext();
-                        String name = null;
+                return getCallLogs();
+            }
+        }, new TaskRunner.Callback<String>() {
+            @Override
+            public void onComplete(String result) {
+                Log.e("progressbarcheck", "" + result);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (result != null) {
+                            if (result.equals("complete")) {
+                                callarray.remove(loadingindex);
+                                adapter.notifyItemRemoved(loadingindex);
+//                        adapter.notifyItemRangeInserted(loadingindex, callarray.size() - 1);
+                                progressBar.setVisibility(GONE);
+                                progressrel.setVisibility(GONE);
+                                callsrecycler.setVisibility(View.VISIBLE);
+                                loading[0] = false;
+                            } else if (result.equals("no_data")) {
+                                progressBar.setVisibility(GONE);
+                                progressrel.setVisibility(GONE);
+                                callsrecycler.setVisibility(GONE);
+                                nocallrel.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+        });
+    }
+
+    private String getCallLogs() {
+        String result = "no_data";
+        ContentResolver cr = getContext().getContentResolver();
+        Cursor managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC LIMIT 50"/*CallLog.Calls.DATE + " DESC limit 1;"*/);
+        int idcolumn = managedCursor.getColumnIndex(CallLog.Calls._ID);
+        int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
+        int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
+        int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
+        int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
+        int totalCall = 1;
+        Log.e("cursorsizecheck", "" + managedCursor.getCount());
+        if (managedCursor != null) {
+            totalCall = 50; // intenger call log limit
+            if (managedCursor.moveToLast()) { //starts pulling logs from last - you can use moveToFirst() for first logs
+                for (int j = 0; j < totalCall; j++) {
+                    String name = null;
+                    if (number != -1) {
                         String phNumber = managedCursor.getString(number);
                         if (!phNumber.equals("")) {
                             name = getContactName(getContext(), phNumber);
                         } else {
                             name = "Private Number";
                         }
+                        String id = managedCursor.getString(idcolumn);
+                        Log.e("idcheckvalue", "" + id);
                         String callType = managedCursor.getString(type);
                         String callDate = managedCursor.getString(date);
-                        Date callDayTime = new Date(Long.valueOf(callDate));
+                        Date callDayTime = new Date(Long.parseLong(callDate));
                         String callDuration = managedCursor.getString(duration);
                         String dir = null;
                         int dircode = Integer.parseInt(callType);
@@ -138,11 +180,6 @@ public class CallsFragment extends Fragment {
                                 dir = "MISSED";
                                 break;
                         }
-                        sb.append("\nPhone Number:--- " + phNumber +
-                                " \nCall Type:--- " + dir +
-                                " \nCall Date:--- " + callDayTime +
-                                " \nCall duration in sec :--- " + callDuration);
-                        sb.append("\n----------------------------------");
                         CallsModel callsmodel = new CallsModel();
                         callsmodel.setDuration(callDuration);
                         callsmodel.setName(name);
@@ -158,43 +195,146 @@ public class CallsFragment extends Fragment {
                         callsmodel.setDate(datestr);
                         callarray.add(callsmodel);
                     }
-                    Log.e("sbtextStruing", "" + sb);
-                    callarray = removeDuplicates(callarray);
-                    managedCursor.close();
-                    result = "complete";
-                } else {
-                    managedCursor.close();
-                    result = "no_data";
+                    managedCursor.moveToPrevious(); // if you used moveToFirst() for first logs, you should this line to moveToNext
                 }
-                return result;
+            } else {
+                managedCursor.close();
+                return "";
+            }
+            Log.e("resultarraycheck", "" + callarray.size());
+//            callarray = removeDuplicates(callarray);
+            result = "complete";
+            managedCursor.close();
+        } else {
+            result = "";
+            managedCursor.close();
+        }
+        return result;
+    }
+
+    @SuppressLint("Range")
+    private void GetCallHistoryInBackground() {
+        nocallrel.setVisibility(GONE);
+        new TaskRunner().executeAsync(new Callable<String>() {
+            String result = null;
+
+            @Override
+            public String call() {
+                Log.e("asynctask", "onBackground");
+                callarray.clear();
+                return getCallLogs();
+//                StringBuffer sb = new StringBuffer();
+//                ContentResolver cr = getContext().getContentResolver();
+//                Cursor managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, null);
+//                int idcolumn = managedCursor.getColumnIndex(CallLog.Calls._ID);
+//                int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
+//                int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
+//                int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
+//                int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
+//                sb.append("Call Details :");
+//                if (managedCursor.getCount() > 0) {
+////                    progressBar.progressiveStart();
+//                    for (int i = 0; i < managedCursor.getCount(); i++) {
+//                        managedCursor.moveToNext();
+//                        String name = null;
+//                        if (number != -1) {
+//                            String phNumber = managedCursor.getString(number);
+//                            if (!phNumber.equals("")) {
+//                                name = getContactName(getContext(), phNumber);
+//                            } else {
+//                                name = "Private Number";
+//                            }
+//                            String id = managedCursor.getString(idcolumn);
+//                            Log.e("idcheckvalue", "" + id);
+//                            String callType = managedCursor.getString(type);
+//                            String callDate = managedCursor.getString(date);
+//                            Date callDayTime = new Date(Long.parseLong(callDate));
+//                            String callDuration = managedCursor.getString(duration);
+//                            String dir = null;
+//                            int dircode = Integer.parseInt(callType);
+//                            switch (dircode) {
+//                                case CallLog.Calls.OUTGOING_TYPE:
+//                                    dir = "OUTGOING";
+//                                    break;
+//
+//                                case CallLog.Calls.INCOMING_TYPE:
+//                                    dir = "INCOMING";
+//                                    break;
+//
+//                                case CallLog.Calls.MISSED_TYPE:
+//                                    dir = "MISSED";
+//                                    break;
+//                            }
+//                            sb.append("\nPhone Number:--- " + phNumber +
+//                                    " \nCall Type:--- " + dir +
+//                                    " \nCall Date:--- " + callDayTime +
+//                                    " \nCall duration in sec :--- " + callDuration);
+//                            sb.append("\n----------------------------------");
+//                            CallsModel callsmodel = new CallsModel();
+//                            callsmodel.setDuration(callDuration);
+//                            callsmodel.setName(name);
+//                            callsmodel.setNumber(phNumber);
+//                            callsmodel.setType(dir);
+//                            Calendar cal = DateToCalendar(callDayTime);
+//                            int day = cal.get(Calendar.DAY_OF_MONTH);
+//                            int month = cal.get(Calendar.MONTH);
+//                            int year = cal.get(Calendar.YEAR);
+//                            String datestr = day + "/" + (month + 1) + "/" + year;
+//                            String timestr = (String) DateFormat.format("HH:mm a", cal.getTime());
+//                            callsmodel.setTime(timestr);
+//                            callsmodel.setDate(datestr);
+//                            callarray.add(callsmodel);
+//                        }
+//                    }
+//                    Log.e("sbtextStruing", "" + sb);
+//                    callarray = removeDuplicates(callarray);
+//                    managedCursor.close();
+//                    result = "complete";
+//                } else {
+//                    managedCursor.close();
+//                    result = "no_data";
+//                }
+//                return result;
             }
         }, new TaskRunner.Callback<String>() {
             @Override
+            public void onStart() {
+                Log.e("asynctask", "onStart");
+                progressBar.setVisibility(View.VISIBLE);
+                progressrel.setVisibility(View.VISIBLE);
+            }
+
+            @Override
             public void onComplete(String result) {
 //                progressBar.progressiveStop();
-                Log.e("progressbarcheck", "" + result);
-                if (result != null) {
-                    if (result.equals("complete")) {
-                        adapter = new CallReyclerAdapter(getContext(), callarray);
-                        linearlayout = new LinearLayoutManager(getContext());
-                        callsrecycler.setLayoutManager(linearlayout);
-                        callsrecycler.setAdapter(adapter);
-                        progressBar.setVisibility(GONE);
-                        progressrel.setVisibility(GONE);
-                        callsrecycler.setVisibility(View.VISIBLE);
-                    } else if (result.equals("no_data")) {
-                        progressBar.setVisibility(GONE);
-                        progressrel.setVisibility(GONE);
-                        callsrecycler.setVisibility(GONE);
-                        nocallrel.setVisibility(View.VISIBLE);
+                Log.e("asynctask", "onComplete");
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e("progressbarcheck", "" + result);
+                        if (result != null) {
+                            if (result.equals("complete")) {
+                                adapter.notifyDataSetChanged();
+                                progressBar.setVisibility(GONE);
+                                progressrel.setVisibility(GONE);
+                                callsrecycler.setVisibility(View.VISIBLE);
+                            } else if (result.equals("no_data")) {
+                                progressBar.setVisibility(GONE);
+                                progressrel.setVisibility(GONE);
+                                callsrecycler.setVisibility(GONE);
+                                nocallrel.setVisibility(View.VISIBLE);
+                            }
+                        }
                     }
-                }
+                });
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e("onerrorexception", "" + Arrays.toString(e.getStackTrace()));
+                Log.e("onerrorexception", "" + e.toString() + " " + Arrays.toString(e.getStackTrace()));
             }
+
+
         });
     }
 

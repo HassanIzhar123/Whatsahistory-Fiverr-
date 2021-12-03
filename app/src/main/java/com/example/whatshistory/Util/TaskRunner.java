@@ -9,15 +9,19 @@ import java.util.concurrent.Executors;
 
 public class TaskRunner {
     private final Executor executor = Executors.newSingleThreadExecutor(); // change according to your requirements
+    //    private final Executor executor = Executors.newFixedThreadPool(5);
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     public interface Callback<R> {
         void onComplete(R result);
 
         void onError(Exception e);
+
+        void onStart();
     }
 
     public <R> void executeAsync(Callable<R> callable, Callback<R> callback) {
+        callback.onStart();
         executor.execute(() -> {
             handler.post(() -> {
                 try {

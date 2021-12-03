@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#92D050"
+    android:background="#FAFAFA"
+    android:elevation="30dp"
     tools:context=".Activities.SplashActivity">
 
     <ImageView
@@ -14,6 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="120dp"
         android:background="@drawable/app_icon_background"
+        android:elevation="20dp"
         android:src="@drawable/app_icon" />
 
     <TextView
@@ -22,21 +24,31 @@
         android:layout_below="@+id/app_icon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
+        android:elevation="20dp"
         android:fontFamily="@font/antic_slab"
-        android:textColor="#333333"
         android:text="Direct Messenger for \n Whatsapp"
         android:textAlignment="center"
+        android:textColor="#333333"
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Created By Future Labs"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:padding="12dp"
+        android:background="#871094"
         android:layout_marginBottom="20dp"
-        android:textSize="20sp"
-        android:textColor="#333333"/>
+        android:elevation="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Created By Future Labs"
+            android:textColor="#FAFAFA"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

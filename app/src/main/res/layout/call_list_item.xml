@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="80dp"
-    android:background="#FAFAFA">
+    android:layout_height="85dp"
+    app:cardCornerRadius="20dp"
+    android:layout_margin="5dp"
+    app:cardElevation="20dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="75dp"
-        android:background="#E3E3E3"
-        android:padding="10dp">
+        android:layout_height="wrap_content"
+        android:background="#FAFAFA"
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp">
 
         <TextView
             android:id="@+id/number_textview"
@@ -23,8 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/number_textview"
-            android:layout_alignParentBottom="true"
-            android:gravity="bottom"
+            android:layout_marginTop="5.5dp"
             android:text="Date"
             android:textColor="#000"
             android:textSize="16sp" />
@@ -58,4 +63,4 @@
 
     </RelativeLayout>
 
-</RelativeLayout>
+</androidx.cardview.widget.CardView>

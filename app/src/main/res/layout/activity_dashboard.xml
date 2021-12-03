@@ -9,8 +9,8 @@
     <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="wrap_content"
-        android:background="#E9E3E3"
-        android:layout_height="60dp">
+        android:layout_height="60dp"
+        android:background="#871094">
 
         <TextView
             android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
             android:layout_centerInParent="true"
             android:lines="1"
             android:text="Whats History"
-            android:textColor="#333"
+            android:textColor="#FAFAFA"
             android:textSize="20sp" />
 
         <ImageButton
@@ -39,7 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
         app:tabGravity="fill"
-        app:tabMode="fixed" />
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="#871094"
+        app:tabTextColor="#871094" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"

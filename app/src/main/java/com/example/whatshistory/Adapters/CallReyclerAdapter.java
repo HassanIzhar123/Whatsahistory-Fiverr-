@@ -29,7 +29,7 @@ import com.example.whatshistory.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CallReyclerAdapter extends RecyclerView.Adapter<CallReyclerAdapter.ContactHolder> {
+public class CallReyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<CallsModel> contactsList;
     private Context mContext;
@@ -40,10 +40,26 @@ public class CallReyclerAdapter extends RecyclerView.Adapter<CallReyclerAdapter.
     }
 
     @Override
-    public ContactHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.call_list_item, parent, false);
-        return new ContactHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == 0) {
+            LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+            View view = layoutInflater.inflate(R.layout.progress_item, parent, false);
+            return new ItemHolder(view);
+        } else {
+            LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+            View view = layoutInflater.inflate(R.layout.call_list_item, parent, false);
+            return new ContactHolder(view);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+//        return super.getItemViewType(position);
+        if (contactsList.get(position) == null) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 
     @Override
@@ -52,16 +68,19 @@ public class CallReyclerAdapter extends RecyclerView.Adapter<CallReyclerAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactHolder holder, final int position) {
-        final CallsModel model = contactsList.get(position);
-        Log.e("callmodelcheck", "" + model.getName());
-        if (model.getName() != null) {
-            holder.setPhoneName(model.getName());
-        } else {
-            holder.setPhoneName(model.getNumber());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+        if (holder instanceof ContactHolder){
+            ContactHolder viewholder=(ContactHolder)holder;
+            final CallsModel model = contactsList.get(position);
+            Log.e("callmodelcheck", "" + model.getName());
+            if (model.getName() != null) {
+                viewholder.setPhoneName(model.getName());
+            } else {
+                viewholder.setPhoneName(model.getNumber());
+            }
+            viewholder.setDate(model.getDate());
+            viewholder.setTime(model.getTime());
         }
-        holder.setDate(model.getDate());
-        holder.setTime(model.getTime());
     }
 
     public Intent findTwitterClient() {
@@ -154,6 +173,12 @@ public class CallReyclerAdapter extends RecyclerView.Adapter<CallReyclerAdapter.
 
         public void setTime(String time) {
             time_textview.setText(time);
+        }
+    }
+
+    public class ItemHolder extends RecyclerView.ViewHolder {
+        public ItemHolder(View itemview) {
+            super(itemview);
         }
     }
 }
