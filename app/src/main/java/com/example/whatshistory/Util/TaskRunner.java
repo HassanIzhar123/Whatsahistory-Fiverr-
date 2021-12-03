@@ -13,6 +13,8 @@ public class TaskRunner {
 
     public interface Callback<R> {
         void onComplete(R result);
+
+        void onError(Exception e);
     }
 
     public <R> void executeAsync(Callable<R> callable, Callback<R> callback) {
@@ -22,7 +24,7 @@ public class TaskRunner {
                     R result = callable.call();
                     callback.onComplete(result);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    callback.onError(e);
                 }
             });
         });

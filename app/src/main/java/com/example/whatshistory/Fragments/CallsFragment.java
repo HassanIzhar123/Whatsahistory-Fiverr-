@@ -4,6 +4,7 @@ import static android.view.View.GONE;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.example.whatshistory.R;
 import com.example.whatshistory.Util.TaskRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
@@ -62,26 +64,25 @@ public class CallsFragment extends Fragment {
 //        callsrecycler.setAdapter(adapter);
 //        adapter = new CallReyclerAdapter();
 //        adapter.submitList(getContext(), callarray);
-        callsrecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) { //check for scroll down
-                    visibleItemCount = linearlayout.getChildCount();
-                    totalItemCount = linearlayout.getItemCount();
-                    pastVisiblesItems = linearlayout.findFirstVisibleItemPosition();
-                    if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            loading = false;
-                            Log.e("recyclerviewend", "Last Item Wow !");
-                            // Do pagination.. i.e. fetch new data
-
-                            loading = true;
-                        }
-                    }
-                }
-            }
-        });
-
+//        callsrecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                if (dy > 0) { //check for scroll down
+//                    visibleItemCount = linearlayout.getChildCount();
+//                    totalItemCount = linearlayout.getItemCount();
+//                    pastVisiblesItems = linearlayout.findFirstVisibleItemPosition();
+//                    if (loading) {
+//                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+//                            loading = false;
+//                            Log.e("recyclerviewend", "Last Item Wow !");
+//                            // Do pagination.. i.e. fetch new data
+//
+//                            loading = true;
+//                        }
+//                    }
+//                }
+//            }
+//        });
         GetCallHistory();
 //        GetCalls();
         return view;
@@ -89,13 +90,15 @@ public class CallsFragment extends Fragment {
 
     @SuppressLint("Range")
     private void GetCallHistory() {
-        progressBar.setVisibility(View.VISIBLE);
-        progressrel.setVisibility(View.VISIBLE);
         nocallrel.setVisibility(GONE);
         new TaskRunner().executeAsync(new Callable<String>() {
+            String result = null;
+
             @Override
-            public String call() throws Exception {
+            public String call()  {
                 callarray.clear();
+                progressBar.setVisibility(View.VISIBLE);
+                progressrel.setVisibility(View.VISIBLE);
                 StringBuffer sb = new StringBuffer();
                 ContentResolver cr = getContext().getContentResolver();
                 Cursor managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, null);
@@ -104,18 +107,17 @@ public class CallsFragment extends Fragment {
                 int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
                 int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
                 sb.append("Call Details :");
+                Log.e("calldetailscheck", "" + managedCursor.getCount());
                 if (managedCursor.getCount() > 0) {
 //                    progressBar.progressiveStart();
-                    while (managedCursor.moveToNext()) {
+                    for (int i = 0; i < managedCursor.getCount(); i++) {
+                        managedCursor.moveToNext();
                         String name = null;
                         String phNumber = managedCursor.getString(number);
-                        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phNumber));
-                        Cursor c = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
-                        if (c != null) {
-                            if (c.moveToFirst()) {
-                                name = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                            }
-                            c.close();
+                        if (!phNumber.equals("")) {
+                            name = getContactName(getContext(), phNumber);
+                        } else {
+                            name = "Private Number";
                         }
                         String callType = managedCursor.getString(type);
                         String callDate = managedCursor.getString(date);
@@ -159,37 +161,59 @@ public class CallsFragment extends Fragment {
                     Log.e("sbtextStruing", "" + sb);
                     callarray = removeDuplicates(callarray);
                     managedCursor.close();
-                    return "complete";
+                    result = "complete";
                 } else {
                     managedCursor.close();
-                    return "no_data";
+                    result = "no_data";
                 }
+                return result;
             }
         }, new TaskRunner.Callback<String>() {
             @Override
             public void onComplete(String result) {
-//                try {
-//                    Thread.sleep(4000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
 //                progressBar.progressiveStop();
-                if (result.equals("complete")) {
-                    adapter = new CallReyclerAdapter(getContext(), callarray);
-                    linearlayout = new LinearLayoutManager(getContext());
-                    callsrecycler.setLayoutManager(linearlayout);
-                    callsrecycler.setAdapter(adapter);
-                    progressBar.setVisibility(GONE);
-                    progressrel.setVisibility(GONE);
-                    callsrecycler.setVisibility(View.VISIBLE);
-                } else if (result.equals("no_data")) {
-                    progressBar.setVisibility(GONE);
-                    progressrel.setVisibility(GONE);
-                    callsrecycler.setVisibility(GONE);
-                    nocallrel.setVisibility(View.VISIBLE);
+                Log.e("progressbarcheck", "" + result);
+                if (result != null) {
+                    if (result.equals("complete")) {
+                        adapter = new CallReyclerAdapter(getContext(), callarray);
+                        linearlayout = new LinearLayoutManager(getContext());
+                        callsrecycler.setLayoutManager(linearlayout);
+                        callsrecycler.setAdapter(adapter);
+                        progressBar.setVisibility(GONE);
+                        progressrel.setVisibility(GONE);
+                        callsrecycler.setVisibility(View.VISIBLE);
+                    } else if (result.equals("no_data")) {
+                        progressBar.setVisibility(GONE);
+                        progressrel.setVisibility(GONE);
+                        callsrecycler.setVisibility(GONE);
+                        nocallrel.setVisibility(View.VISIBLE);
+                    }
                 }
             }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("onerrorexception", "" + Arrays.toString(e.getStackTrace()));
+            }
         });
+    }
+
+    @SuppressLint("Range")
+    public static String getContactName(Context context, String phoneNumber) {
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        String contactName = null;
+        if (cursor.moveToFirst()) {
+            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+        }
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        return contactName;
     }
 
     public ArrayList<CallsModel> removeDuplicates(ArrayList<CallsModel> list) {

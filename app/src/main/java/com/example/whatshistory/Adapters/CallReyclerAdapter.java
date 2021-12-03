@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.telephony.PhoneNumberUtils;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,9 +54,10 @@ public class CallReyclerAdapter extends RecyclerView.Adapter<CallReyclerAdapter.
     @Override
     public void onBindViewHolder(@NonNull ContactHolder holder, final int position) {
         final CallsModel model = contactsList.get(position);
-        if(model.getName()==null){
+        Log.e("callmodelcheck", "" + model.getName());
+        if (model.getName() != null) {
             holder.setPhoneName(model.getName());
-        }else{
+        } else {
             holder.setPhoneName(model.getNumber());
         }
         holder.setDate(model.getDate());
@@ -155,101 +157,3 @@ public class CallReyclerAdapter extends RecyclerView.Adapter<CallReyclerAdapter.
         }
     }
 }
-
-//public class CallReyclerAdapter extends RecyclerView.Adapter<CallReyclerAdapter.CartFragViewHolder> {
-//    Context context;
-//    private static final String TAG = "debinf PurchaseAdap";
-//
-//    private static final DiffUtil.ItemCallback<CallsModel> DIFF_CALLBACK = new DiffUtil.ItemCallback<CallsModel>() {
-//        @Override
-//        public boolean areItemsTheSame(@NonNull CallsModel oldProduct, @NonNull CallsModel newProduct) {
-//            Log.i(TAG, "areItemsTheSame: old is " + oldProduct.getNumber() + " ; new is " + newProduct.getNumber());
-//            return oldProduct.getNumber().equals(newProduct.getNumber());
-//        }
-//
-//        @Override
-//        public boolean areContentsTheSame(@NonNull CallsModel oldProduct, @NonNull CallsModel newProduct) {
-//            Log.i(TAG, "areContentsTheSame: old is " + oldProduct.getNumber() + " ; new is " + newProduct.getNumber());
-//            return oldProduct.getNumber().equals(newProduct.getNumber());
-//        }
-//    };
-//
-//    private AsyncListDiffer<CallsModel> differ = new AsyncListDiffer<CallsModel>(this, DIFF_CALLBACK);
-//
-//    @NonNull
-//    @Override
-//    public CartFragViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_list_item, parent, false);
-//        return new CartFragViewHolder(view);
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull CartFragViewHolder holder, int position) {
-//        final CallsModel model = differ.getCurrentList().get(position);
-//        holder.setPhoneName(model.getNumber());
-//        holder.setDate(model.getDate());
-//        holder.setTime(model.getTime());
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        Log.i(TAG, "getItemCount");
-//        return differ.getCurrentList().size();
-//    }
-//
-//    public void submitList(Context context, List<CallsModel> products) {
-//        Log.i(TAG, "submitList: products.size is " + products.size());
-//        this.context = context;
-//        differ.submitList(products);
-//    }
-//
-//    public class CartFragViewHolder extends RecyclerView.ViewHolder {
-//        private TextView number_textview, date_textview, time_textview;
-//        private ImageView enter_whatsapp_btn;
-//
-//        public CartFragViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//
-//            number_textview = itemView.findViewById(R.id.number_textview);
-//            date_textview = itemView.findViewById(R.id.date_textview);
-//            time_textview = itemView.findViewById(R.id.time_textview);
-//            enter_whatsapp_btn = itemView.findViewById(R.id.enter_whatsapp);
-//            enter_whatsapp_btn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    try {
-//                        Intent intent = new Intent(Intent.ACTION_SEND);
-//                        intent.setType("text/plain");
-////                        intent.setPackage("com.whatsapp");
-//                        intent.setPackage("com.whatsapp.w4b");
-//                        // Give your message here
-//                        intent.putExtra(Intent.EXTRA_TEXT, "Enter Message");
-//                        // Checking whether Whatsapp
-//                        // is installed or not
-//                        if (intent.resolveActivity(context.getPackageManager()) == null) {
-//                            Toast.makeText(context, "Please install whatsapp first.", Toast.LENGTH_SHORT).show();
-//                            return;
-//                        }
-//                        context.startActivity(intent);
-//                    } catch (Exception e) {
-//                        if (e instanceof ActivityNotFoundException) {
-//
-//                        }
-//                    }
-//                }
-//            });
-//        }
-//
-//        public void setPhoneName(String number) {
-//            number_textview.setText(number);
-//        }
-//
-//        public void setDate(String date) {
-//            date_textview.setText(date);
-//        }
-//
-//        public void setTime(String time) {
-//            time_textview.setText(time);
-//        }
-//    }
-//}
