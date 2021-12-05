@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="20dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/defaultspinnerrel"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_cross" />
+
+        <TextView
+            android:id="@+id/selectionwhatsapp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/alegreya_sans_sc_medium"
+            android:text="Select Whatsapp App!"
+            android:textColor="#333"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:id="@+id/defaultspinnerrel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/selectionwhatsapp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:weightSum="1.5">
+
+            <RelativeLayout
+                android:id="@+id/spinnerrel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="0.555"
+                android:background="@drawable/app_selection_spinner"
+                android:elevation="10dp">
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/spinnergroupbackground"
+                    android:minWidth="250dp"
+                    android:overlapAnchor="false"
+                    android:popupBackground="#FFFFFF"
+                    android:spinnerMode="dropdown"
+                    android:theme="@style/ThemeOverlay.AppCompat.Light" />
+
+            </RelativeLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/savebtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                android:backgroundTint="#871094"
+                android:elevation="10dp"
+                android:text="Save" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

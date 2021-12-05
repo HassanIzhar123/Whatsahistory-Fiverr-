@@ -8,16 +8,17 @@
 
     <RelativeLayout
         android:id="@+id/toolbar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#871094">
+        android:background="#871094"
+        android:elevation="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:lines="1"
-            android:text="Whats History"
+            android:text="WhatsHistory"
             android:textColor="#FAFAFA"
             android:textSize="20sp" />
 
@@ -28,7 +29,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:background="?selectableItemBackground"
+            android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/ic_settings" />
 
     </RelativeLayout>
@@ -48,5 +49,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tablayout" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/sendmessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:tint="#FAFAFA"
+        android:elevation="10dp"
+        app:backgroundTint="#B591EA"
+        app:srcCompat="@drawable/ic_add" />
 
 </RelativeLayout>

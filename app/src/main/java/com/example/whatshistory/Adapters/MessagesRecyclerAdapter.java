@@ -5,31 +5,41 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.telephony.PhoneNumberUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.whatshistory.Databases.Sqlitedatabase;
 import com.example.whatshistory.Models.CallsModel;
 import com.example.whatshistory.Models.MessagesModel;
 import com.example.whatshistory.R;
+import com.example.whatshistory.Util.SharedPreference;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecyclerAdapter.ContactHolder> {
 
     private ArrayList<MessagesModel> contactsList;
-    private Context mContext;
+    private Context context;
 
     public MessagesRecyclerAdapter(Context context, ArrayList<MessagesModel> contactsList) {
         this.contactsList = contactsList;
-        this.mContext = context;
+        this.context = context;
     }
 
     @Override
@@ -52,29 +62,6 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
         holder.setTime(model.getTime());
     }
 
-    public Intent findTwitterClient() {
-        final String[] twitterApps = {
-                "com.whatsapp.w4b",
-                "com.whatsapp"};
-        Intent tweetIntent = new Intent();
-        tweetIntent.setType("text/plain");
-        final PackageManager packageManager = mContext.getPackageManager();
-        List<ResolveInfo> list = packageManager.queryIntentActivities(
-                tweetIntent, PackageManager.MATCH_DEFAULT_ONLY);
-
-        for (int i = 0; i < twitterApps.length; i++) {
-            for (ResolveInfo resolveInfo : list) {
-                String p = resolveInfo.activityInfo.packageName;
-                if (p != null && p.startsWith(twitterApps[i])) {
-                    tweetIntent.setPackage(p);
-                    return tweetIntent;
-                }
-            }
-        }
-
-        return null;
-    }
-
     public class ContactHolder extends RecyclerView.ViewHolder {
         private TextView number_textview, date_textview, time_textview;
         private ImageView enter_whatsapp_btn;
@@ -89,45 +76,37 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
                 @Override
                 public void onClick(View v) {
                     String number = contactsList.get(getAdapterPosition()).getNumber();
-                    number = number.replaceAll(" ", "").replace("+", "");
-                    Intent shareIntent = findTwitterClient();
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, "test");
-                    shareIntent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.Conversation"));
-                    shareIntent.putExtra("jid", PhoneNumberUtils.stripSeparators(number) + "@s.whatsapp.net");
-                    mContext.startActivity(Intent.createChooser(shareIntent, "Select App"));
-
-
-//                    String contact = contactsList.get(getAdapterPosition()).getNumber();
-//                    String url = "https://api.whatsapp.com/send?phone=" + contact;
-//                    try {
-//                        PackageManager pm = mContext.getPackageManager();
-//                        pm.getPackageInfo("com.whatsapp.w4b", PackageManager.GET_ACTIVITIES);
-//                        Intent i = new Intent(Intent.ACTION_VIEW);
-//                        i.setData(Uri.parse(url));
-//                        mContext.startActivity(i);
-//                    } catch (PackageManager.NameNotFoundException e) {
-//                        Toast.makeText(mContext, "Whatsapp app not installed in your phone", Toast.LENGTH_SHORT).show();
-//                        e.printStackTrace();
-//                    }
-//                    try {
-//                        Intent intent = new Intent(Intent.ACTION_SEND);
-//                        intent.setType("text/plain");
-////                        intent.setPackage("com.whatsapp");
-//                        intent.setPackage("com.whatsapp.w4b");
-//                        // Give your message here
-//                        intent.putExtra(Intent.EXTRA_TEXT, "Enter Message");
-//                        // Checking whether Whatsapp
-//                        // is installed or not
-//                        if (intent.resolveActivity(mContext.getPackageManager()) == null) {
-//                            Toast.makeText(mContext, "Please install whatsapp first.", Toast.LENGTH_SHORT).show();
-//                            return;
-//                        }
-//                        mContext.startActivity(intent);
-//                    } catch (Exception e) {
-//                        if (e instanceof ActivityNotFoundException) {
-//
-//                        }
-//                    }
+                    String DEFAULTAPP = "DefaultApp";
+                    String apppackagename = new SharedPreference(context).getPreference(DEFAULTAPP);
+                    String packagname = "";
+                    if (packagname != null) {
+                        if (apppackagename.equals("") || apppackagename.equals("WhatsApp")) {
+                            packagname = "com.whatsapp";
+                        } else if (apppackagename.equals("WhatsApp Business")) {
+                            packagname = "com.whatsapp.w4b";
+                        }
+                        PackageManager packagemanager = context.getPackageManager();
+                        if (isPackageInstalled(packagname, packagemanager)) {
+                            Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + number + "&text=" + "");
+                            Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
+                            sendIntent.setPackage(packagname);
+                            sendIntent.setData(uri);
+                            if (sendIntent.resolveActivity(packagemanager) != null) {
+                                Sqlitedatabase database = new Sqlitedatabase(context);
+                                MessagesModel model = contactsList.get(getAdapterPosition());
+                                Calendar c = getCalendar();
+                                model.setDate(getCurrentDate(c));
+                                model.setTime(getCurrentTime(c));
+                                database.insertData(model);
+                                Toast.makeText(context, "Data inserted", Toast.LENGTH_SHORT).show();
+                                context.startActivity(sendIntent);
+                            }
+                        } else {
+                            Toast.makeText(context, "App Is Not Installed!", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(context.getApplicationContext(), "Select Default Whatsapp App in settings!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
@@ -142,6 +121,44 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
 
         public void setTime(String time) {
             time_textview.setText(time);
+        }
+    }
+
+    private Calendar getCalendar() {
+        return Calendar.getInstance();
+    }
+
+    private String getCurrentTime(Calendar c) {
+        SimpleDateFormat timesdf = new SimpleDateFormat("HH:mm a");
+        return timesdf.format(c.getTime());
+    }
+
+    private String getCurrentDate(Calendar c) {
+        SimpleDateFormat datesdf = new SimpleDateFormat("dd/MM/yyyy");
+        return datesdf.format(c.getTime());
+    }
+
+    private boolean isPackageInstalled(String packageName, PackageManager packageManager) {
+        try {
+            packageManager.getPackageInfo(packageName, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    public String PhoneNumberWithoutCountryCode(String phoneNumberWithCountryCode, String countryiso) {
+        PhoneNumberUtil util = null;
+        if (util == null) {
+            util = PhoneNumberUtil.getInstance();
+
+        }
+        try {
+            final Phonenumber.PhoneNumber phoneNumber = util.parse(phoneNumberWithCountryCode, countryiso);
+            return util.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
+        } catch (NumberParseException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

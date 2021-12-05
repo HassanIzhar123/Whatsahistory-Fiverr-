@@ -3,30 +3,34 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2203125" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/drawable/app_icon.xml" value="0.2203125" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/drawable/app_icon_background.xml" value="0.2203125" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2203125" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/drawable/ic_settings.xml" value="0.2203125" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/drawable/ic_whatsapp.xml" value="0.2203125" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/layout/activity_dashboard.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/layout/activity_splash.xml" value="0.22" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/layout/call_list_item.xml" value="0.25" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/layout/fragment_calls.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/layout/fragment_sms.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/Hassan izhar/Desktop/Whatsahistory-Fiverr-/app/src/main/res/layout/progress_item.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/hassa/.gradle/caches/transforms-3/21249a56641fb0309777a5ae16ce99ff/transformed/core-1.7.0/res/layout/custom_dialog.xml" value="0.24895833333333334" />
         <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/app_icon.xml" value="0.2" />
         <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/app_icon_background.xml" value="0.24351851851851852" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/app_selection_spinner.xml" value="0.23703703703703705" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/edittextdrawable.xml" value="0.24259259259259258" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/ic_add.xml" value="0.24259259259259258" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.12407407407407407" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/ic_cross.xml" value="0.23703703703703705" />
         <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/ic_launcher_background.xml" value="0.16944444444444445" />
         <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/ic_nodata.xml" value="0.1" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/ic_not_valid.xml" value="0.12407407407407407" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/ic_settings.xml" value="0.24351851851851852" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/ic_valid.xml" value="0.14895833333333333" />
         <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/ic_whatsapp.xml" value="0.16944444444444445" />
         <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/nocall.xml" value="0.16944444444444445" />
-        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/activity_dashboard.xml" value="0.24895833333333334" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/nohistory.xml" value="0.1" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/nomessages.xml" value="0.1" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/drawable/spinnergroupbackground.xml" value="0.23703703703703705" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/activity_dashboard.xml" value="0.2" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/activity_settings.xml" value="0.24895833333333334" />
         <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/activity_splash.xml" value="0.4" />
-        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/call_list_item.xml" value="0.3754325259515571" />
-        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/fragment_calls.xml" value="0.41702867072111205" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/add_custom_dialog.xml" value="0.176" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/call_list_item.xml" value="0.264" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/custom_dialog.xml" value="0.176" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/custom_spinner_row.xml" value="0.536" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/fragment_calls.xml" value="0.2" />
         <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/fragment_history.xml" value="0.24895833333333334" />
-        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/fragment_sms.xml" value="0.24895833333333334" />
+        <entry key="..\:/Users/hassa/AndroidStudioProjects/WhatsHistory/app/src/main/res/layout/fragment_sms.xml" value="0.2" />
       </map>
     </option>
   </component>

@@ -13,8 +13,9 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="SPB" parent="android:Widget.ProgressBar.Horizontal">
-    </style>
+
+    <style name="SPB" parent="android:Widget.ProgressBar.Horizontal"></style>
+
     <style name="SmoothProgressBar" parent="SPB">
         <item name="spb_color">@color/spb_default_color</item>
         <item name="spb_sections_count">@integer/spb_default_sections_count</item>
@@ -25,4 +26,11 @@
         <item name="spb_mirror_mode">@bool/spb_default_mirror_mode</item>
         <item name="spb_interpolator">@integer/spb_default_interpolator</item>
     </style>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
 </resources>

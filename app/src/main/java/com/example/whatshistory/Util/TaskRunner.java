@@ -13,11 +13,11 @@ public class TaskRunner {
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     public interface Callback<R> {
+        void onStart();
+
         void onComplete(R result);
 
         void onError(Exception e);
-
-        void onStart();
     }
 
     public <R> void executeAsync(Callable<R> callable, Callback<R> callback) {

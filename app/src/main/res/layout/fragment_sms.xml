@@ -1,35 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:animateLayoutChanges="true">
 
     <com.example.whatshistory.CustomView.SmoothProgressBar
         android:id="@+id/progressbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        app:spb_sections_count="4"
+        android:visibility="gone"
         app:spb_color="#FF0000"
-        app:spb_speed="1.0"
-        app:spb_stroke_width="4dp"
-        app:spb_stroke_separator_length="4dp"
-        app:spb_reversed="false"
         app:spb_mirror_mode="false"
         app:spb_progressiveStart_activated="true"
         app:spb_progressiveStart_speed="1.5"
-        app:spb_progressiveStop_speed="3.4"/>
+        app:spb_progressiveStop_speed="3.4"
+        app:spb_reversed="false"
+        app:spb_sections_count="4"
+        app:spb_speed="1.0"
+        app:spb_stroke_separator_length="4dp"
+        app:spb_stroke_width="4dp" />
 
     <RelativeLayout
         android:id="@+id/progressrel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:animateLayoutChanges="true">
 
         <TextView
+            android:id="@+id/dataloading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Data Is Loading! Please Wait" />
+            android:fontFamily="@font/antic_slab"
+            android:text="Data Is Loading! Please Wait"
+            android:textSize="20sp" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dataloading"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:indeterminate="true"
+            android:indeterminateTint="#905BE0"
+            android:indeterminateTintMode="src_atop" />
 
     </RelativeLayout>
 
@@ -37,21 +54,31 @@
         android:id="@+id/messagesrecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/progressbar"
+        android:layout_above="@+id/adView"
         android:overScrollMode="never" />
+
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/bannerappid" />
 
     <RelativeLayout
         android:id="@+id/nomessagesrel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:animateLayoutChanges="true"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/nomessageimg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/nocall" />
+            android:src="@drawable/nomessages" />
 
         <TextView
             android:id="@+id/nomessagefound"

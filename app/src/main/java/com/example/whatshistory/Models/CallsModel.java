@@ -3,6 +3,15 @@ package com.example.whatshistory.Models;
 public class CallsModel {
     String number;
     String date;
+    String countryIso;
+
+    public String getCountryIso() {
+        return countryIso;
+    }
+
+    public void setCountryIso(String countryIso) {
+        this.countryIso = countryIso;
+    }
 
     public String getName() {
         return name;

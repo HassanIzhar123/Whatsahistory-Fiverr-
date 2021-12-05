@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.SettingsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/settingtextview"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#871094"
+            android:elevation="10dp"
+            android:fontFamily="@font/alegreya_sans_sc_medium"
+            android:gravity="center"
+            android:text="Settings"
+            android:textColor="#FAFAFA"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/btnrel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/settingtextview"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/defaultwhatsappbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Select Default Whatsapp App"
+                app:backgroundTint="#905BE0"
+                app:cornerRadius="20dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/contactusbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/defaultwhatsappbtn"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Contact us / Report issue"
+                app:backgroundTint="#905BE0"
+                app:cornerRadius="20dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/adsfreeappbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/contactusbtn"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Buy Ads Free Version for 1$"
+                app:backgroundTint="#905BE0"
+                app:cornerRadius="20dp" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnrel"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:gravity="bottom"
+            android:text="@string/version"
+            android:textColor="#000" />
+    </RelativeLayout>
+
+</androidx.core.widget.NestedScrollView>

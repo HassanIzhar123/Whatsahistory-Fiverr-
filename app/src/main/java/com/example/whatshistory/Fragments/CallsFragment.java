@@ -1,6 +1,7 @@
 package com.example.whatshistory.Fragments;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -10,6 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.telephony.PhoneNumberUtils;
+import android.telephony.TelephonyManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +29,11 @@ import com.example.whatshistory.CustomView.SmoothProgressBar;
 import com.example.whatshistory.Models.CallsModel;
 import com.example.whatshistory.R;
 import com.example.whatshistory.Util.TaskRunner;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,9 +53,9 @@ public class CallsFragment extends Fragment {
     CallReyclerAdapter adapter;
     SmoothProgressBar progressBar;
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
     LinearLayoutManager linearlayout;
     boolean isLoading = false;
+    AdView mAdView;
 
     public CallsFragment() {
     }
@@ -56,6 +64,9 @@ public class CallsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calls, container, false);
+        mAdView = view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         nocallrel = view.findViewById(R.id.nocallrel);
         callsrecycler = view.findViewById(R.id.callsrecycler);
         progressrel = view.findViewById(R.id.progressrel);
@@ -64,24 +75,24 @@ public class CallsFragment extends Fragment {
         linearlayout = new LinearLayoutManager(getContext());
         callsrecycler.setLayoutManager(linearlayout);
         callsrecycler.setAdapter(adapter);
-        callsrecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                if (!isLoading) {
-                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == callarray.size() - 1) {
-                        Log.e("loadingindexcheck", "" + (callarray.size() - 1));
-                        callarray.add(null);
-                        adapter.notifyItemInserted(callarray.size() - 1);
-                        isLoading = true;
-                        int loadingindex = callarray.size() - 1;
-                        getMoreDataInBackground(loadingindex, isLoading);
-                        isLoading = false;
-                    }
-                }
-            }
-        });
+//        callsrecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+//                if (!isLoading) {
+//                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == callarray.size() - 1) {
+//                        Log.e("loadingindexcheck", "" + (callarray.size() - 1));
+//                        callarray.add(null);
+//                        adapter.notifyItemInserted(callarray.size() - 1);
+//                        isLoading = true;
+//                        int loadingindex = callarray.size() - 1;
+//                        getMoreDataInBackground(loadingindex, isLoading);
+//                        isLoading = false;
+//                    }
+//                }
+//            }
+//        });
 
         GetCallHistoryInBackground();
         return view;
@@ -126,12 +137,16 @@ public class CallsFragment extends Fragment {
 
             @Override
             public void onError(Exception e) {
-
+                progressrel.setVisibility(GONE);
+                callsrecycler.setVisibility(GONE);
+                nocallrel.setVisibility(VISIBLE);
             }
 
             @Override
             public void onStart() {
-
+                progressrel.setVisibility(VISIBLE);
+                callsrecycler.setVisibility(GONE);
+                nocallrel.setVisibility(GONE);
             }
         });
     }
@@ -139,74 +154,73 @@ public class CallsFragment extends Fragment {
     private String getCallLogs() {
         String result = "no_data";
         ContentResolver cr = getContext().getContentResolver();
-        Cursor managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC LIMIT 50"/*CallLog.Calls.DATE + " DESC limit 1;"*/);
+        String[] mPhoneNumberProjection = { ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.NUMBER, ContactsContract.PhoneLookup.DISPLAY_NAME };
+        Cursor managedCursor = cr.query(CallLog.Calls.CONTENT_URI, mPhoneNumberProjection, null, null, CallLog.Calls.DATE + " DESC LIMIT 50"/*CallLog.Calls.DATE + " DESC limit 1;"*/);
         int idcolumn = managedCursor.getColumnIndex(CallLog.Calls._ID);
         int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
         int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
         int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
         int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
-        int totalCall = 1;
+        int c_iso = managedCursor.getColumnIndex(CallLog.Calls.COUNTRY_ISO);
         Log.e("cursorsizecheck", "" + managedCursor.getCount());
         if (managedCursor != null) {
-            totalCall = 50; // intenger call log limit
-            if (managedCursor.moveToLast()) { //starts pulling logs from last - you can use moveToFirst() for first logs
-                for (int j = 0; j < totalCall; j++) {
-                    String name = null;
-                    if (number != -1) {
-                        String phNumber = managedCursor.getString(number);
-                        if (!phNumber.equals("")) {
-                            name = getContactName(getContext(), phNumber);
-                        } else {
-                            name = "Private Number";
-                        }
-                        String id = managedCursor.getString(idcolumn);
-                        Log.e("idcheckvalue", "" + id);
-                        String callType = managedCursor.getString(type);
-                        String callDate = managedCursor.getString(date);
-                        Date callDayTime = new Date(Long.parseLong(callDate));
-                        String callDuration = managedCursor.getString(duration);
-                        String dir = null;
-                        int dircode = Integer.parseInt(callType);
-                        switch (dircode) {
-                            case CallLog.Calls.OUTGOING_TYPE:
-                                dir = "OUTGOING";
-                                break;
-
-                            case CallLog.Calls.INCOMING_TYPE:
-                                dir = "INCOMING";
-                                break;
-
-                            case CallLog.Calls.MISSED_TYPE:
-                                dir = "MISSED";
-                                break;
-                        }
-                        CallsModel callsmodel = new CallsModel();
-                        callsmodel.setDuration(callDuration);
-                        callsmodel.setName(name);
-                        callsmodel.setNumber(phNumber);
-                        callsmodel.setType(dir);
-                        Calendar cal = DateToCalendar(callDayTime);
-                        int day = cal.get(Calendar.DAY_OF_MONTH);
-                        int month = cal.get(Calendar.MONTH);
-                        int year = cal.get(Calendar.YEAR);
-                        String datestr = day + "/" + (month + 1) + "/" + year;
-                        String timestr = (String) DateFormat.format("HH:mm a", cal.getTime());
-                        callsmodel.setTime(timestr);
-                        callsmodel.setDate(datestr);
-                        callarray.add(callsmodel);
+            while (managedCursor.moveToNext()) {
+                String name = null;
+                if (number != -1) {
+                    String phNumber = managedCursor.getString(number);
+                    Log.e("phnumbercheck", "" + PhoneNumberUtils.formatNumber(phNumber));
+                    if (!phNumber.equals("")) {
+                        name = getContactName(getContext(), phNumber);
+                    } else {
+                        name = "Private Number";
                     }
-                    managedCursor.moveToPrevious(); // if you used moveToFirst() for first logs, you should this line to moveToNext
+                    String id = managedCursor.getString(idcolumn);
+                    Log.e("idcheckvalue", "" + id);
+                    String callType = managedCursor.getString(type);
+                    String callDate = managedCursor.getString(date);
+                    Date callDayTime = new Date(Long.parseLong(callDate));
+                    String callDuration = managedCursor.getString(duration);
+                    String countryiso = managedCursor.getString(c_iso);
+                    String dir = null;
+                    int dircode = Integer.parseInt(callType);
+                    switch (dircode) {
+                        case CallLog.Calls.OUTGOING_TYPE:
+                            dir = "OUTGOING";
+                            break;
+
+                        case CallLog.Calls.INCOMING_TYPE:
+                            dir = "INCOMING";
+                            break;
+
+                        case CallLog.Calls.MISSED_TYPE:
+                            dir = "MISSED";
+                            break;
+                    }
+                    CallsModel callsmodel = new CallsModel();
+                    callsmodel.setDuration(callDuration);
+                    callsmodel.setName(name);
+                    callsmodel.setNumber(phNumber);
+                    callsmodel.setType(dir);
+                    Calendar cal = DateToCalendar(callDayTime);
+                    int day = cal.get(Calendar.DAY_OF_MONTH);
+                    int month = cal.get(Calendar.MONTH);
+                    int year = cal.get(Calendar.YEAR);
+                    String datestr = day + "/" + (month + 1) + "/" + year;
+                    String timestr = (String) DateFormat.format("HH:mm a", cal.getTime());
+                    callsmodel.setTime(timestr);
+                    callsmodel.setDate(datestr);
+                    callsmodel.setCountryIso(countryiso);
+                    callarray.add(callsmodel);
                 }
-            } else {
-                managedCursor.close();
-                return "";
+//                managedCursor.moveToPrevious();
             }
+
             Log.e("resultarraycheck", "" + callarray.size());
 //            callarray = removeDuplicates(callarray);
             result = "complete";
             managedCursor.close();
         } else {
-            result = "";
+            result = "no_data";
             managedCursor.close();
         }
         return result;
@@ -297,12 +311,6 @@ public class CallsFragment extends Fragment {
 //                return result;
             }
         }, new TaskRunner.Callback<String>() {
-            @Override
-            public void onStart() {
-                Log.e("asynctask", "onStart");
-                progressBar.setVisibility(View.VISIBLE);
-                progressrel.setVisibility(View.VISIBLE);
-            }
 
             @Override
             public void onComplete(String result) {
@@ -331,10 +339,18 @@ public class CallsFragment extends Fragment {
 
             @Override
             public void onError(Exception e) {
-                Log.e("onerrorexception", "" + e.toString() + " " + Arrays.toString(e.getStackTrace()));
+                Log.e("Exceptionincall", "" + e.toString());
+                progressrel.setVisibility(VISIBLE);
+                callsrecycler.setVisibility(GONE);
+                nocallrel.setVisibility(GONE);
             }
 
-
+            @Override
+            public void onStart() {
+                progressrel.setVisibility(VISIBLE);
+                callsrecycler.setVisibility(GONE);
+                nocallrel.setVisibility(GONE);
+            }
         });
     }
 

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="35dp"
+    app:cardElevation="25dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/mobiletext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="Enter Mobile Number"
+            android:textColor="#333"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/exitbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_above="@+id/edittextrel"
+            android:layout_alignParentEnd="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:paddingEnd="12dp"
+            android:src="@drawable/ic_cross" />
+
+        <RelativeLayout
+            android:id="@+id/edittextrel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mobiletext"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp">
+
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/ccp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                app:ccp_autoDetectCountry="true"
+                app:ccp_autoFormatNumber="true"
+                app:ccp_showFullName="false"
+                app:ccp_showNameCode="true"
+                app:ccp_showPhoneCode="false"
+                app:ccp_textGravity="RIGHT" />
+
+            <EditText
+                android:id="@+id/add_edittext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@+id/ccp"
+                android:background="@drawable/edittextdrawable"
+                android:hint="Enter Mobile Number"
+                android:inputType="number"
+                android:maxWidth="250dp"
+                android:padding="10dp"
+                android:paddingEnd="45dp"
+                android:text="" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-45dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/add_edittext">
+
+                <ImageView
+                    android:id="@+id/rightimg"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_valid"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/wrongimg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_not_valid"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Example:(countrycode)"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/sendbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edittextrel"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#905BE0"
+            android:text="send" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
