@@ -39,4 +39,5 @@ dependencies {
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.38'
     implementation 'com.google.android.gms:play-services-ads:20.5.0'
     implementation 'com.hbb20:ccp:2.4.7'
+    implementation 'com.google.android.gms:play-services-ads:20.5.0'
 }

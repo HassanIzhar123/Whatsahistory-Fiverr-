@@ -154,8 +154,7 @@ public class CallsFragment extends Fragment {
     private String getCallLogs() {
         String result = "no_data";
         ContentResolver cr = getContext().getContentResolver();
-        String[] mPhoneNumberProjection = { ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.NUMBER, ContactsContract.PhoneLookup.DISPLAY_NAME };
-        Cursor managedCursor = cr.query(CallLog.Calls.CONTENT_URI, mPhoneNumberProjection, null, null, CallLog.Calls.DATE + " DESC LIMIT 50"/*CallLog.Calls.DATE + " DESC limit 1;"*/);
+        Cursor managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC LIMIT 50"/*CallLog.Calls.DATE + " DESC limit 1;"*/);
         int idcolumn = managedCursor.getColumnIndex(CallLog.Calls._ID);
         int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
         int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);

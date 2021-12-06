@@ -105,6 +105,8 @@ public class DashboardActivity extends AppCompatActivity {
                     });
                 } else {
                     Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                    Intent i = new Intent(DashboardActivity.this, SettingsActivity.class);
+                    startActivity(i);
                 }
             }
         });

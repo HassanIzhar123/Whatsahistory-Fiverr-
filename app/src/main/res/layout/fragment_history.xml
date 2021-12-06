@@ -69,7 +69,7 @@
             android:layout_below="@+id/nohistroyimg"
             android:layout_centerHorizontal="true"
             android:fontFamily="@font/alegreya_sans_sc_medium"
-            android:text="No Calls Found!"
+            android:text="No History Found!"
             android:textColor="#000"
             android:textSize="20sp" />
 

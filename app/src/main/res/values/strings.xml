@@ -2,18 +2,18 @@
     <string name="app_name">WhatsHistory</string>
     <string name="version">Version 1.0</string>
 <!--    test-->
-    <string name="bannerappid">ca-app-pub-3940256099942544/6300978111</string>
+<!--    <string name="bannerappid">ca-app-pub-3940256099942544/6300978111</string>-->
     <!--    production-->
-<!--    <string name="bannerappid">ca-app-pub-6918954219526182/4094550926</string>-->
+    <string name="bannerappid">ca-app-pub-6918954219526182/4094550926</string>
 
     <!--    test-->
-    <string name="InterstitialAdappid">ca-app-pub-3940256099942544/1033173712</string>
+<!--    <string name="InterstitialAdappid">ca-app-pub-3940256099942544/1033173712</string>-->
     <!--    production-->
-    <!--    <string name="InterstitialAdappid">ca-app-pub-6918954219526182/3488046264</string>-->
+        <string name="InterstitialAdappid">ca-app-pub-6918954219526182/3488046264</string>
 
 
 <!--    test-->
-    <string name="appid">ca-app-pub-3940256099942544~3347511713</string>
-<!--    production-->
-<!--    <string name="appid">ca-app-pub-6918954219526182~4656823558</string>-->
+<!--    <string name="appid">ca-app-pub-3940256099942544~3347511713</string>-->
+    production
+    <string name="appid">ca-app-pub-6918954219526182~4656823558</string>
 </resources>
