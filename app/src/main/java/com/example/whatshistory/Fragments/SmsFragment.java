@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
@@ -69,10 +70,21 @@ public class SmsFragment extends Fragment {
         new TaskRunner().executeAsync(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                Cursor cursor = getContext().getContentResolver()
-                        .query(CONTENT_URI,
-                                null, "type=" + 1, null,
-                                "date" + " COLLATE LOCALIZED DESC LIMIT 50");
+                Cursor cursor;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                    cursor = getContext().getContentResolver()
+//                            .query(CONTENT_URI,
+//                                    null, "type=" + 1, null,
+//                                    "date" + " DESC LIMIT 50");
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(ContentResolver.QUERY_ARG_LIMIT, 50);
+                    cursor = getContext().getContentResolver().query(CONTENT_URI, null, bundle, null);
+                } else {
+                    cursor = getContext().getContentResolver()
+                            .query(CONTENT_URI,
+                                    null, "type=" + 1, null,
+                                    "date" + " COLLATE LOCALIZED DESC LIMIT 50");
+                }
                 if (cursor != null) {
                     if (cursor.getCount() > 0) {
                         messagesarray.clear();

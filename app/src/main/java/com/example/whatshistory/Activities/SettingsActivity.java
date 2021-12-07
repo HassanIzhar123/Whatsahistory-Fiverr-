@@ -33,8 +33,10 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CustomDialogClass cdd = new CustomDialogClass(SettingsActivity.this);
-                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                cdd.show();
+                if (!cdd.isShowing()) {
+                    cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    cdd.show();
+                }
             }
         });
         contactusbtn.setOnClickListener(new View.OnClickListener() {

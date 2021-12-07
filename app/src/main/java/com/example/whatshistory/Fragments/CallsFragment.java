@@ -1,5 +1,7 @@
 package com.example.whatshistory.Fragments;
 
+import static android.content.ContentResolver.QUERY_SORT_DIRECTION_DESCENDING;
+import static android.provider.Telephony.Sms.Inbox.CONTENT_URI;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -8,7 +10,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
@@ -21,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import androidx.fragment.app.Fragment;
+import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -154,7 +159,14 @@ public class CallsFragment extends Fragment {
     private String getCallLogs() {
         String result = "no_data";
         ContentResolver cr = getContext().getContentResolver();
-        Cursor managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC LIMIT 50"/*CallLog.Calls.DATE + " DESC limit 1;"*/);
+        Cursor managedCursor;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(ContentResolver.QUERY_ARG_LIMIT, 50);
+            managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, bundle, null);
+        } else {
+            managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " COLLATE LOCALIZED DESC LIMIT 50");
+        }
         int idcolumn = managedCursor.getColumnIndex(CallLog.Calls._ID);
         int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
         int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
@@ -162,7 +174,7 @@ public class CallsFragment extends Fragment {
         int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
         int c_iso = managedCursor.getColumnIndex(CallLog.Calls.COUNTRY_ISO);
         Log.e("cursorsizecheck", "" + managedCursor.getCount());
-        if (managedCursor != null) {
+        if (managedCursor.getCount() > 0) {
             while (managedCursor.moveToNext()) {
                 String name = null;
                 if (number != -1) {
@@ -339,9 +351,9 @@ public class CallsFragment extends Fragment {
             @Override
             public void onError(Exception e) {
                 Log.e("Exceptionincall", "" + e.toString());
-                progressrel.setVisibility(VISIBLE);
+                progressrel.setVisibility(GONE);
                 callsrecycler.setVisibility(GONE);
-                nocallrel.setVisibility(GONE);
+                nocallrel.setVisibility(VISIBLE);
             }
 
             @Override

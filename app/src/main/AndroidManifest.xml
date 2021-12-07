@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.whatshistory">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -7,6 +8,9 @@
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_SMS" />
+<!--    <uses-permission-->
+<!--        android:name="android.permission.QUERY_ALL_PACKAGES"-->
+<!--        tools:ignore="QueryAllPackagesPermission" />-->
 
     <application
         android:name=".application"
@@ -16,6 +20,7 @@
         android:roundIcon="@drawable/app_icon_png"
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsHistory">
+
         <activity
             android:name=".Activities.SettingsActivity"
             android:exported="false" />
@@ -38,10 +43,16 @@
         <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/appid"/>
-<!--            android:value="ca-app-pub-6918954219526182~4656823558"/>-->
+            android:value="@string/appid" />
+        <!--            android:value="ca-app-pub-6918954219526182~4656823558"/>-->
 
 
     </application>
+    <queries>
+        <package android:name="com.whatsapp" />
+    </queries>
+    <queries>
+        <package android:name="com.whatsapp.w4b" />
+    </queries>
 
 </manifest>

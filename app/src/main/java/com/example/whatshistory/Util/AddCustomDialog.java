@@ -100,36 +100,32 @@ public class AddCustomDialog extends Dialog {
         String DEFAULTAPP = "DefaultApp";
         String apppackagename = new SharedPreference(context).getPreference(DEFAULTAPP);
         String packagname = "";
-        if (packagname != null) {
-            if (apppackagename.equals("") || apppackagename.equals("WhatsApp")) {
-                packagname = "com.whatsapp";
-            } else if (apppackagename.equals("WhatsApp Business")) {
-                packagname = "com.whatsapp.w4b";
-            }
-            PackageManager packagemanager = context.getPackageManager();
-            if (isPackageInstalled(packagname, packagemanager)) {
-                Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + number + "&text=" + "");
-                Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
-                sendIntent.setPackage(packagname);
-                sendIntent.setData(uri);
-                if (sendIntent.resolveActivity(packagemanager) != null) {
-                    Sqlitedatabase database = new Sqlitedatabase(context);
-                    MessagesModel model = new MessagesModel();
-                    Calendar c = getCalendar();
-                    model.setName(getContactName(getContext(),number));
-                    model.setNumber(number);
-                    model.setDate(getCurrentDate(c));
-                    model.setTime(getCurrentTime(c));
-                    database.insertData(model);
-                    Toast.makeText(context, "Data inserted", Toast.LENGTH_SHORT).show();
-                    activity.startActivity(sendIntent);
-                    dismiss();
-                }
-            } else {
-                Toast.makeText(context, "App Is Not Installed!", Toast.LENGTH_SHORT).show();
+        if (apppackagename.equals("") || apppackagename.equals("WhatsApp")) {
+            packagname = "com.whatsapp";
+        } else if (apppackagename.equals("WhatsApp Business")) {
+            packagname = "com.whatsapp.w4b";
+        }
+        PackageManager packagemanager = context.getPackageManager();
+        if (isPackageInstalled(packagname, packagemanager)) {
+            Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + number + "&text=" + "");
+            Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
+            sendIntent.setPackage(packagname);
+            sendIntent.setData(uri);
+            if (sendIntent.resolveActivity(packagemanager) != null) {
+                Sqlitedatabase database = new Sqlitedatabase(context);
+                MessagesModel model = new MessagesModel();
+                Calendar c = getCalendar();
+                model.setName(getContactName(getContext(), number));
+                model.setNumber(number);
+                model.setDate(getCurrentDate(c));
+                model.setTime(getCurrentTime(c));
+                database.insertData(model);
+                Toast.makeText(context, "Data inserted", Toast.LENGTH_SHORT).show();
+                activity.startActivity(sendIntent);
+                dismiss();
             }
         } else {
-            Toast.makeText(context.getApplicationContext(), "Select Default Whatsapp App in settings!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "App Is Not Installed!", Toast.LENGTH_SHORT).show();
         }
     }
 

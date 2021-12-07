@@ -52,8 +52,10 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AddCustomDialog cdd = new AddCustomDialog(DashboardActivity.this);
-                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                cdd.show();
+                if (!cdd.isShowing()) {
+                    cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    cdd.show();
+                }
             }
         });
         settingsbtn.setOnClickListener(new View.OnClickListener() {
