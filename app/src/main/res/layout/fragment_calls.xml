@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/antic_slab"
-            android:text="Data Is Loading! Please Wait"
+            android:text="Lading.... Please Wait"
             android:textSize="20sp" />
 
         <ProgressBar
@@ -59,13 +59,13 @@
         android:id="@+id/callsrecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/progressbar"
         android:layout_above="@+id/adView"
+        android:layout_below="@+id/progressbar"
         android:overScrollMode="never" />
 
     <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

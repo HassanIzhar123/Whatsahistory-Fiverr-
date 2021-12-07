@@ -120,7 +120,7 @@ public class AddCustomDialog extends Dialog {
                 model.setDate(getCurrentDate(c));
                 model.setTime(getCurrentTime(c));
                 database.insertData(model);
-                Toast.makeText(context, "Data inserted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Processing...", Toast.LENGTH_SHORT).show();
                 activity.startActivity(sendIntent);
                 dismiss();
             }

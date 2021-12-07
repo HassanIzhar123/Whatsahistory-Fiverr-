@@ -105,32 +105,29 @@ public class HistoryReyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     String DEFAULTAPP = "DefaultApp";
                     String apppackagename = new SharedPreference(context).getPreference(DEFAULTAPP);
                     String packagname = "";
-                    if (packagname != null) {
-                        if (apppackagename.equals("") || apppackagename.equals("WhatsApp")) {
-                            packagname = "com.whatsapp";
-                        } else if (apppackagename.equals("WhatsApp Business")) {
-                            packagname = "com.whatsapp.w4b";
-                        }
-                        PackageManager packagemanager = context.getPackageManager();
-                        if (isPackageInstalled(packagname, packagemanager)) {
-                            Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + number + "&text=" + "");
-                            Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
-                            sendIntent.setPackage(packagname);
-                            sendIntent.setData(uri);
-                            if (sendIntent.resolveActivity(packagemanager) != null) {
-                                Sqlitedatabase database = new Sqlitedatabase(context);
-                                HistoryModel model = contactsList.get(getAdapterPosition());
-                                Calendar c = getCalendar();
-                                model.setDate(getCurrentDate(c));
-                                model.setTime(getCurrentTime(c));
-                                database.insertData(model);
-                                context.startActivity(sendIntent);
-                            }
-                        } else {
-                            Toast.makeText(context, "App Is Not Installed!", Toast.LENGTH_SHORT).show();
+                    if (apppackagename.equals("") || apppackagename.equals("WhatsApp")) {
+                        packagname = "com.whatsapp";
+                    } else if (apppackagename.equals("WhatsApp Business")) {
+                        packagname = "com.whatsapp.w4b";
+                    }
+                    PackageManager packagemanager = context.getPackageManager();
+                    if (isPackageInstalled(packagname, packagemanager)) {
+                        Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + number + "&text=" + "");
+                        Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
+                        sendIntent.setPackage(packagname);
+                        sendIntent.setData(uri);
+                        if (sendIntent.resolveActivity(packagemanager) != null) {
+                            Sqlitedatabase database = new Sqlitedatabase(context);
+                            HistoryModel model = contactsList.get(getAdapterPosition());
+                            Calendar c = getCalendar();
+                            model.setDate(getCurrentDate(c));
+                            model.setTime(getCurrentTime(c));
+                            database.insertData(model);
+                            Toast.makeText(context, "Processing...", Toast.LENGTH_SHORT).show();
+                            context.startActivity(sendIntent);
                         }
                     } else {
-                        Toast.makeText(context.getApplicationContext(), "Select Default Whatsapp App in settings!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "App Is Not Installed!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

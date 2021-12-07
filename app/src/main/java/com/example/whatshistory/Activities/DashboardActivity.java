@@ -27,12 +27,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 public class DashboardActivity extends AppCompatActivity {
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    ViewPagerAdapter viewPagerAdapter;
-    ImageButton settingsbtn;
-    private InterstitialAd mInterstitialAd;
-    FloatingActionButton sendmessage;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
+    private ImageButton settingsbtn;
+    private FloatingActionButton sendmessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,55 +60,9 @@ public class DashboardActivity extends AppCompatActivity {
         settingsbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AdRequest adRequest = new AdRequest.Builder().build();
-                InterstitialAd.load(getApplicationContext(), getString(R.string.InterstitialAdappid), adRequest,
-                        new InterstitialAdLoadCallback() {
-                            @Override
-                            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                                // The mInterstitialAd reference will be null until
-                                // an ad is loaded.
-                                mInterstitialAd = interstitialAd;
-                                Log.i("loadaderror", "onAdLoaded");
-                            }
-
-                            @Override
-                            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                                // Handle the error
-                                Log.i("loadaderror", loadAdError.getMessage());
-                                mInterstitialAd = null;
-                            }
-                        });
-                if (mInterstitialAd != null) {
-                    mInterstitialAd.show(DashboardActivity.this);
-                    mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                        @Override
-                        public void onAdDismissedFullScreenContent() {
-                            // Called when fullscreen content is dismissed.
-                            Log.d("TAG", "The ad was dismissed.");
-                            Intent i = new Intent(DashboardActivity.this, SettingsActivity.class);
-                            startActivity(i);
-                        }
-
-                        @Override
-                        public void onAdFailedToShowFullScreenContent(AdError adError) {
-                            // Called when fullscreen content failed to show.
-                            Log.d("TAG", "The ad failed to show.");
-                        }
-
-                        @Override
-                        public void onAdShowedFullScreenContent() {
-                            // Called when fullscreen content is shown.
-                            // Make sure to set your reference to null so you don't
-                            // show it a second time.
-                            mInterstitialAd = null;
-                            Log.d("TAG", "The ad was shown.");
-                        }
-                    });
-                } else {
-                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
-                    Intent i = new Intent(DashboardActivity.this, SettingsActivity.class);
-                    startActivity(i);
-                }
+                Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                Intent i = new Intent(DashboardActivity.this, SettingsActivity.class);
+                startActivity(i);
             }
         });
     }

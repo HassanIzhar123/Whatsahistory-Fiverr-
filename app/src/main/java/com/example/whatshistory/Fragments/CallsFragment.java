@@ -103,59 +103,6 @@ public class CallsFragment extends Fragment {
         return view;
     }
 
-    private void getMoreDataInBackground(int loadingindex, boolean isLoading) {
-        boolean[] loading = {isLoading};
-        new TaskRunner().executeAsync(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-//                callarray.clear();
-                progressBar.setVisibility(View.VISIBLE);
-                progressrel.setVisibility(View.VISIBLE);
-                return getCallLogs();
-            }
-        }, new TaskRunner.Callback<String>() {
-            @Override
-            public void onComplete(String result) {
-                Log.e("progressbarcheck", "" + result);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result != null) {
-                            if (result.equals("complete")) {
-                                callarray.remove(loadingindex);
-                                adapter.notifyItemRemoved(loadingindex);
-//                        adapter.notifyItemRangeInserted(loadingindex, callarray.size() - 1);
-                                progressBar.setVisibility(GONE);
-                                progressrel.setVisibility(GONE);
-                                callsrecycler.setVisibility(View.VISIBLE);
-                                loading[0] = false;
-                            } else if (result.equals("no_data")) {
-                                progressBar.setVisibility(GONE);
-                                progressrel.setVisibility(GONE);
-                                callsrecycler.setVisibility(GONE);
-                                nocallrel.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onError(Exception e) {
-                progressrel.setVisibility(GONE);
-                callsrecycler.setVisibility(GONE);
-                nocallrel.setVisibility(VISIBLE);
-            }
-
-            @Override
-            public void onStart() {
-                progressrel.setVisibility(VISIBLE);
-                callsrecycler.setVisibility(GONE);
-                nocallrel.setVisibility(GONE);
-            }
-        });
-    }
-
     private String getCallLogs() {
         String result = "no_data";
         ContentResolver cr = getContext().getContentResolver();
