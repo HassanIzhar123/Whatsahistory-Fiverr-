@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class HistoryFragment extends Fragment {
     RelativeLayout nohistoryrel, progressrel;
@@ -61,6 +62,7 @@ public class HistoryFragment extends Fragment {
             public String call() {
                 Sqlitedatabase database = new Sqlitedatabase(getContext());
                 historyarray = database.getAllHistory();
+                sumDuplicates(historyarray);
                 if (historyarray.size() > 0) {
                     return "complete";
                 } else {
@@ -100,4 +102,25 @@ public class HistoryFragment extends Fragment {
         });
     }
 
+    public void sumDuplicates(ArrayList<HistoryModel> strarr) {
+//        int[] array = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 9, 10};
+//        int sum = 0;
+//        for (int j = 0; j < array.length; j++) {
+//            for (int k = j + 1; k < array.length; k++) {
+//                if (k != j && array[k] == array[j]) {
+//                    sum = sum + array[k];
+//                    System.out.println("Duplicate found: " + array[k] + " " + "Sum of the duplicate value is " + sum);
+//                }
+//            }
+//        }
+//        int sum = 1;
+//        for (int i = 0; i < strarr.size(); i++) {
+//            for (int j = i + 1; j < strarr.size(); j++) {
+//                if (j != i && strarr.get(j).getNumber().equals(strarr.get(i).getNumber())) {
+//                   sum=sum+strarr.get();
+//                    Log.e("Duplicatefound", "" + strarr.get(j).getNumber() + " " + "Sum of the duplicate value is " + sum);
+//                }
+//            }
+//        }
+    }
 }

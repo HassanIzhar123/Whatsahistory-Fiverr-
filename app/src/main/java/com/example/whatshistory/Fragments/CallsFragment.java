@@ -1,7 +1,10 @@
 package com.example.whatshistory.Fragments;
 
 import static android.content.ContentResolver.QUERY_SORT_DIRECTION_DESCENDING;
+import static android.provider.CallLog.Calls.LIMIT_PARAM_KEY;
+import static android.provider.CallLog.Calls.OFFSET_PARAM_KEY;
 import static android.provider.Telephony.Sms.Inbox.CONTENT_URI;
+import static android.provider.Telephony.Sms.Inbox.DEFAULT_SORT_ORDER;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -15,6 +18,8 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
+import android.telecom.Call;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.text.format.DateFormat;
@@ -111,11 +116,25 @@ public class CallsFragment extends Fragment {
         ContentResolver cr = getContext().getContentResolver();
         Cursor managedCursor;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Bundle bundle = new Bundle();
-            bundle.putInt(ContentResolver.QUERY_ARG_LIMIT, 50);
-            managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, bundle, null);
+//            Bundle bundle = new Bundle();
+//            bundle.putInt(ContentResolver.QUERY_ARG_LIMIT, 50);
+//            managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, bundle, null);
+//            managedCursor=cr.query(CallLog.Calls.CONTENT_URI,null);
+            Log.e("smsfraemnt", "here");
+//            Bundle queryArgs = new Bundle();
+//            queryArgs.putInt(ContentResolver.QUERY_ARG_OFFSET, 0);
+//            queryArgs.putInt(ContentResolver.QUERY_ARG_LIMIT, 1);
+//            queryArgs.putString(ContentResolver.QUERY_ARG_SORT_DIRECTION,CallLog.Calls.DATE + " DESC");
+            Uri uri = CallLog.Calls.CONTENT_URI.buildUpon().appendQueryParameter(LIMIT_PARAM_KEY, "50").build();
+            managedCursor = cr.query(
+                    uri,    // Content Uri is specific to individual content providers.
+                    null/*new String[]{CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.TYPE, CallLog.Calls.DATE, CallLog.Calls.DURATION, CallLog.Calls.COUNTRY_ISO}*/,    // String[] describing which columns to return.
+                    null,     // Query arguments.
+                    null);
+
         } else {
-            managedCursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " COLLATE LOCALIZED DESC LIMIT 50");
+            managedCursor = cr.query(CallLog.Calls.CONTENT_URI, new String[]{CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.TYPE, CallLog.Calls.DATE, CallLog.Calls.DURATION, CallLog.Calls.COUNTRY_ISO}
+                    , null, null, CallLog.Calls.DATE + " COLLATE LOCALIZED DESC LIMIT 50", null);
         }
         int idcolumn = managedCursor.getColumnIndex(CallLog.Calls._ID);
         int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);

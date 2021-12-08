@@ -1,6 +1,8 @@
 package com.example.whatshistory.Fragments;
 
+import static android.provider.CallLog.Calls.LIMIT_PARAM_KEY;
 import static android.provider.Telephony.Sms.Inbox.CONTENT_URI;
+import static android.provider.Telephony.Sms.Inbox.DEFAULT_SORT_ORDER;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -13,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
@@ -72,13 +75,23 @@ public class SmsFragment extends Fragment {
             public String call() throws Exception {
                 Cursor cursor;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                    cursor = getContext().getContentResolver()
-//                            .query(CONTENT_URI,
-//                                    null, "type=" + 1, null,
-//                                    "date" + " DESC LIMIT 50");
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(ContentResolver.QUERY_ARG_LIMIT, 50);
-                    cursor = getContext().getContentResolver().query(CONTENT_URI, null, bundle, null);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putInt(ContentResolver.QUERY_ARG_LIMIT, 50);
+//                    cursor = getContext().getContentResolver().query(CONTENT_URI, null, bundle, null);
+                    Log.e("smsfraemnt1", "here");
+//                    Bundle queryArgs = new Bundle();
+//                    queryArgs.putInt(ContentResolver.QUERY_ARG_OFFSET, 0);
+//                    queryArgs.putInt(ContentResolver.QUERY_ARG_LIMIT, 1);
+//                    Uri uri = Telephony.Sms.Inbox.CONTENT_URI.buildUpon().appendQueryParameter(LIMIT_PARAM_KEY, "50").appendQueryParameter(DEFAULT_SORT_ORDER, " date DESC").build();
+//                    cursor = getContext().getContentResolver().query(
+//                            uri,    // Content Uri is specific to individual content providers.
+//                            null/*new String[]{"service_center", "address", "date", "type"}*/,    // String[] describing which columns to return.
+//                            queryArgs,     // Query arguments.
+//                            null);
+                    cursor = getContext().getContentResolver()
+                            .query(CONTENT_URI,
+                                    null, "type=" + 1, null,
+                                    "date" + " COLLATE LOCALIZED DESC LIMIT 50");
                 } else {
                     cursor = getContext().getContentResolver()
                             .query(CONTENT_URI,
@@ -92,7 +105,6 @@ public class SmsFragment extends Fragment {
                         while (cursor.moveToNext()) {
                             String no = cursor.getString(cursor.getColumnIndex("service_center"));
                             String messageNumber = cursor.getString(cursor.getColumnIndex("address"));
-                            String messageContent = cursor.getString(cursor.getColumnIndex("body"));
                             String date = cursor.getString(cursor.getColumnIndex("date"));
                             String type = cursor.getString(cursor.getColumnIndex("type"));
 

@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/antic_slab"
-            android:text="Lading.... Please Wait"
+            android:text="Loading.... Please Wait"
             android:textSize="20sp" />
 
         <ProgressBar
