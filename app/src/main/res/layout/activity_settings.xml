@@ -40,7 +40,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="Select Default Whatsapp App"
+                android:text="Select Default WhatsApp"
                 app:backgroundTint="#905BE0"
                 app:cornerRadius="20dp" />
 

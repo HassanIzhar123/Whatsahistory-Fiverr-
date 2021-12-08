@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#CECFD1"
     tools:context=".Activities.DashboardActivity">
 
     <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#871094"
-        android:elevation="10dp">
+        android:background="#871094">
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,16 +39,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
+        android:background="#871094"
         app:tabGravity="fill"
         app:tabMode="fixed"
-        app:tabSelectedTextColor="#871094"
-        app:tabTextColor="#871094" />
+        app:tabIndicatorColor="#FAFAFA"
+        app:tabSelectedTextColor="#FAFAFA"
+        app:tabTextColor="#FAFAFA" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tablayout" />
+        android:layout_below="@+id/tablayout"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="#CECFD1"
+        android:layout_marginTop="10dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/sendmessage"
@@ -58,8 +64,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:tint="#FAFAFA"
         android:elevation="10dp"
+        android:tint="#FAFAFA"
         app:backgroundTint="#B591EA"
         app:srcCompat="@drawable/ic_add" />
 

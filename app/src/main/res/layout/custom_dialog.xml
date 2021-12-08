@@ -10,15 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/defaultspinnerrel"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="15dp"
-            android:background="?selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_cross" />
-
         <TextView
             android:id="@+id/selectionwhatsapp"
             android:layout_width="wrap_content"
@@ -30,52 +21,69 @@
             android:textColor="#333"
             android:textSize="20sp" />
 
-        <LinearLayout
-            android:id="@+id/defaultspinnerrel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:layout_below="@+id/selectionwhatsapp"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            android:weightSum="1.5">
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="#871094" />
 
-            <RelativeLayout
-                android:id="@+id/spinnerrel"
-                android:layout_width="match_parent"
+        <RelativeLayout
+            android:id="@+id/defaultspinnerrel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <RadioGroup
+                android:id="@+id/radiogroup"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="0.555"
-                android:background="@drawable/app_selection_spinner"
-                android:elevation="10dp">
+                android:layout_centerHorizontal="true">
 
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/spinner"
+                <RadioButton
+                    android:id="@+id/whatsappbtn"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/spinnergroupbackground"
-                    android:minWidth="250dp"
-                    android:overlapAnchor="false"
-                    android:popupBackground="#FFFFFF"
-                    android:spinnerMode="dropdown"
-                    android:theme="@style/ThemeOverlay.AppCompat.Light" />
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/app_icon_background"
+                    android:buttonTint="#871094"
+                    android:elevation="2dp"
+                    android:paddingEnd="15dp"
+                    android:text="Whatsapp" />
 
-            </RelativeLayout>
+                <RadioButton
+                    android:id="@+id/whatsappbbtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/app_icon_background"
+                    android:buttonTint="#871094"
+                    android:elevation="2dp"
+                    android:paddingEnd="15dp"
+                    android:text="Whatsapp Business" />
+
+            </RadioGroup>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/savebtn"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1"
+                android:layout_below="@+id/radiogroup"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:backgroundTint="#871094"
                 android:elevation="10dp"
-                android:text="Save" />
+                android:text="Save"
+                app:cornerRadius="10dp" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </RelativeLayout>
 

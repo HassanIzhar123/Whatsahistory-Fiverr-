@@ -1,5 +1,6 @@
 package com.example.whatshistory.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,6 +23,12 @@ import com.example.whatshistory.Models.CallsModel;
 import com.example.whatshistory.Models.MessagesModel;
 import com.example.whatshistory.R;
 import com.example.whatshistory.Util.SharedPreference;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -35,6 +42,7 @@ public class CallReyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private ArrayList<CallsModel> contactsList;
     private Context context;
+    private InterstitialAd mInterstitialAd;
 
     public CallReyclerAdapter(Context context, ArrayList<CallsModel> contactsList) {
         this.contactsList = contactsList;
@@ -85,31 +93,6 @@ public class CallReyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public Intent findTwitterClient(String packagename) {
-
-//        final String[] twitterApps = {
-//                "com.whatsapp.w4b", "com.whatsapp"
-//        };
-        final String[] twitterApps = {
-                "com.whatsapp", "com.whatsapp.w4b"
-        };
-        Intent tweetIntent = new Intent();
-        tweetIntent.setType("text/plain");
-        final PackageManager packageManager = context.getPackageManager();
-        List<ResolveInfo> list = packageManager.queryIntentActivities(tweetIntent, PackageManager.MATCH_DEFAULT_ONLY);
-        for (int i = 0; i < twitterApps.length; i++) {
-            for (ResolveInfo resolveInfo : list) {
-                String p = resolveInfo.activityInfo.packageName;
-                if (p != null && p.startsWith(twitterApps[i])) {
-                    tweetIntent.setPackage(p);
-                    return tweetIntent;
-                }
-            }
-        }
-
-        return null;
-    }
-
     public class ContactHolder extends RecyclerView.ViewHolder {
         private TextView number_textview, date_textview, time_textview;
         private ImageView enter_whatsapp_btn;
@@ -123,38 +106,13 @@ public class CallReyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             enter_whatsapp_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String number = contactsList.get(getAdapterPosition()).getNumber();
-                    String countryiso = contactsList.get(getAdapterPosition()).getCountryIso();
-//                    number = number.replaceAll(" ", "").replace("+", "");
-                    number = PhoneNumberWithoutCountryCode(number, countryiso);
-                    Log.e("numbercheckval", "" + PhoneNumberWithoutCountryCode(number, countryiso) + " " + PhoneNumberUtils.stripSeparators(number) + " " + number);
-                    String DEFAULTAPP = "DefaultApp";
-                    String apppackagename = new SharedPreference(context).getPreference(DEFAULTAPP);
-                    String packagname = "";
-                    if (apppackagename.equals("") || apppackagename.equals("WhatsApp")) {
-                        packagname = "com.whatsapp";
-                    } else if (apppackagename.equals("WhatsApp Business")) {
-                        packagname = "com.whatsapp.w4b";
-                    }
-                    PackageManager packagemanager = context.getPackageManager();
-                    if (isPackageInstalled(packagname, packagemanager)) {
-                        Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + number + "&text=" + "");
-                        Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
-                        sendIntent.setPackage(packagname);
-                        sendIntent.setData(uri);
-                        if (sendIntent.resolveActivity(packagemanager) != null) {
-                            Sqlitedatabase database = new Sqlitedatabase(context);
-                            CallsModel model = contactsList.get(getAdapterPosition());
-                            Calendar c = getCalendar();
-                            model.setDate(getCurrentDate(c));
-                            model.setTime(getCurrentTime(c));
-                            database.insertData(model);
-                            Toast.makeText(context, "Data inserted", Toast.LENGTH_SHORT).show();
-                            context.startActivity(sendIntent);
-                        }
-                    } else {
-                        Toast.makeText(context, "App Is Not Installed!", Toast.LENGTH_SHORT).show();
-                    }
+                    ShowInterestialAds(getAdapterPosition());
+                }
+            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ShowInterestialAds(getAdapterPosition());
                 }
             });
         }
@@ -169,6 +127,89 @@ public class CallReyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public void setTime(String time) {
             time_textview.setText(time);
+        }
+    }
+
+    private void ShowInterestialAds(int position) {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(context, context.getString(R.string.InterstitialAdappid), adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("loadaderror", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.i("loadaderror", loadAdError.getMessage());
+                        mInterstitialAd = null;
+                    }
+                });
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show((Activity) context);
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    // Called when fullscreen content is dismissed.
+                    Log.d("TAG", "The ad was dismissed.");
+                    OpenChat(position);
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    // Called when fullscreen content failed to show.
+                    Log.d("TAG", "The ad failed to show.");
+                }
+
+                @Override
+                public void onAdShowedFullScreenContent() {
+                    // Called when fullscreen content is shown.
+                    // Make sure to set your reference to null so you don't
+                    // show it a second time.
+                    mInterstitialAd = null;
+                    Log.d("TAG", "The ad was shown.");
+                }
+            });
+        } else {
+            OpenChat(position);
+        }
+    }
+
+    private void OpenChat(int position) {
+        String number = contactsList.get(position).getNumber();
+        String countryiso = contactsList.get(position).getCountryIso();
+        number = PhoneNumberWithoutCountryCode(number, countryiso);
+        Log.e("numbercheckval", "" + PhoneNumberWithoutCountryCode(number, countryiso) + " " + PhoneNumberUtils.stripSeparators(number) + " " + number);
+        String DEFAULTAPP = "DefaultApp";
+        String apppackagename = new SharedPreference(context).getPreference(DEFAULTAPP);
+        String packagname = "";
+        if (apppackagename.equals("") || apppackagename.equals("WhatsApp")) {
+            packagname = "com.whatsapp";
+        } else if (apppackagename.equals("WhatsApp Business")) {
+            packagname = "com.whatsapp.w4b";
+        }
+        PackageManager packagemanager = context.getPackageManager();
+        if (isPackageInstalled(packagname, packagemanager)) {
+            Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + number + "&text=" + "");
+            Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
+            sendIntent.setPackage(packagname);
+            sendIntent.setData(uri);
+            if (sendIntent.resolveActivity(packagemanager) != null) {
+                Sqlitedatabase database = new Sqlitedatabase(context);
+                CallsModel model = contactsList.get(position);
+                Calendar c = getCalendar();
+                model.setDate(getCurrentDate(c));
+                model.setTime(getCurrentTime(c));
+                database.insertData(model);
+                Toast.makeText(context, "Data inserted", Toast.LENGTH_SHORT).show();
+                context.startActivity(sendIntent);
+            }
+        } else {
+            Toast.makeText(context, "App Is Not Installed!", Toast.LENGTH_SHORT).show();
         }
     }
 
